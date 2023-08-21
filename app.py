@@ -12,7 +12,6 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 import requests
-import gdown
 
 
 
@@ -47,16 +46,18 @@ st.markdown("""[Tushar-Aggarwal.com](https://tushar-aggarwal.com/)""")
 
 
 # File handler
-url = "https://drive.google.com/uc?id=1hTXcm0Myz6K1MOKHV3pyqXkJFLzo3aoV"
-output = "Supermarket.csv"  # replace with the name you want for your CSV file
-gdown.download(url, output, quiet=False)
+# Read in data from the Google Sheet.
+# Uses st.cache_data to only rerun when the query changes or after 10 min.
+@st.cache_data(ttl=600)
+def load_data(sheets_url):
+    csv_url = sheets_url.replace("/edit#gid=", "/export?format=csv&gid=")
+    return pd.read_csv(csv_url)
 
-st.cache_data
-def load_data():
-    data = pd.read_excel(output, sheet_name="Orders")  # Use pd.read_csv for CSV files, not pd.read_excel
-    return data
+df = load_data(st.secrets["public_gsheets_url"])
 
-df = load_data()
+# Print results.
+for row in df.itertuples():
+    st.write(f"{row.name} has a :{row.pet}:")
 
 
 
