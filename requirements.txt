@@ -7,4 +7,4 @@ matplotlib==3.5.2
 requests
 openpyxl
 gspread==v5.10.0
-gdown==4.7.1
+gdown==3.3.1
