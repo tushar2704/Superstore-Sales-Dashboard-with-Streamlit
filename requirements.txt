@@ -6,4 +6,5 @@ plotly.express
 matplotlib==3.5.2
 requests
 openpyxl
-gdown
+gspread==v5.10.0
+gdown==4.7.1
