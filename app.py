@@ -11,7 +11,7 @@ import pandas as pd
 import os
 import warnings
 warnings.filterwarnings('ignore')
-import matplotlib
+
 
 
 
@@ -129,7 +129,7 @@ with col2:
 cl1, cl2 = st.columns((2))
 with cl1:
     with st.expander("Category_ViewData"):
-        st.write(category_df.style.background_gradient(cmap="Blues"))
+        st.write(category_df)
         csv = category_df.to_csv(index = False).encode('utf-8')
         st.download_button("Download Data", data = csv, file_name = "Category.csv", mime = "text/csv",
                             help = 'Click here to download the data as a CSV file')
@@ -137,7 +137,7 @@ with cl1:
 with cl2:
     with st.expander("Region_ViewData"):
         region = filtered_df.groupby(by = "Region", as_index = False)["Sales"].sum()
-        st.write(region.style.background_gradient(cmap="Oranges"))
+        st.write(region)
         csv = region.to_csv(index = False).encode('utf-8')
         st.download_button("Download Data", data = csv, file_name = "Region.csv", mime = "text/csv",
                         help = 'Click here to download the data as a CSV file')
@@ -151,7 +151,7 @@ fig2 = px.line(linechart, x = "month_year", y="Sales", labels = {"Sales": "Amoun
 st.plotly_chart(fig2,use_container_width=True)
 
 with st.expander("View Data of TimeSeries:"):
-    st.write(linechart.T.style.background_gradient(cmap="Blues"))
+    st.write(linechart.T)
     csv = linechart.to_csv(index=False).encode("utf-8")
     st.download_button('Download Data', data = csv, file_name = "TimeSeries.csv", mime ='text/csv')
 
@@ -187,7 +187,7 @@ with st.expander("Summary_Table"):
     st.markdown("Month wise sub-Category Table")
     filtered_df["month"] = filtered_df["Order Date"].dt.month_name()
     sub_category_Year = pd.pivot_table(data = filtered_df, values = "Sales", index = ["Sub-Category"],columns = "month")
-    st.write(sub_category_Year.style.background_gradient(cmap="Blues"))
+    st.write(sub_category_Year)
 
 # Create a scatter plot
 data1 = px.scatter(filtered_df, x = "Sales", y = "Profit", size = "Quantity")
@@ -197,7 +197,7 @@ data1['layout'].update(title="Relationship between Sales and Profits using Scatt
 st.plotly_chart(data1,use_container_width=True)
 
 with st.expander("View Data"):
-    st.write(filtered_df.iloc[:500,1:20:2].style.background_gradient(cmap="Oranges"))
+    st.write(filtered_df.iloc[:500,1:20:2])
 
 # Download orginal DataSet
 csv = df.to_csv(index = False).encode('utf-8')
