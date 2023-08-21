@@ -3,4 +3,7 @@ pandas
 numpy
 plotly
 plotly.express
-matplotlib
+matplotlib==3.5.2
+requests
+openpyxl
+gdown

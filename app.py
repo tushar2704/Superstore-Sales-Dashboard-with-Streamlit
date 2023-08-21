@@ -11,8 +11,9 @@ import pandas as pd
 import os
 import warnings
 warnings.filterwarnings('ignore')
-
-
+import requests
+import openpyxl as op
+import gdown
 
 
 
@@ -46,11 +47,22 @@ st.markdown("""[Tushar-Aggarwal.com](https://tushar-aggarwal.com/)""")
 
 
 
-#File handler
+# File handler
+url = "https://drive.google.com/uc?id=1hTXcm0Myz6K1MOKHV3pyqXkJFLzo3aoV"
+output = "Supermarket.csv"  # replace with the name you want for your CSV file
+gdown.download(url, output, quiet=False)
+
+st.cache_data
+def load_data():
+    data = pd.read_excel(output, sheet_name="Orders")  # Use pd.read_csv for CSV files, not pd.read_excel
+    return data
+
+df = load_data()
 
 
 
-df = pd.read_excel(r"D:\Superstore-Sales-with-Streamlit\src\data\Superstore.xls")
+
+#df = pd.read_excel(r"D:\Superstore-Sales-with-Streamlit\src\data\Superstore.xls")
 #Date
 col1, col2 = st.columns((2))
 df["Order Date"] = pd.to_datetime(df["Order Date"])
