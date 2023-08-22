@@ -7,3 +7,5 @@ matplotlib==3.5.2
 requests
 openpyxl
 xlrd
+streamlit-option-menu
+psycopg2-binary==2.9.7

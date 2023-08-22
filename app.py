@@ -11,7 +11,7 @@ import pandas as pd
 import os
 import warnings
 warnings.filterwarnings('ignore')
-
+from streamlit_option_menu import option_menu
 
 
 
@@ -46,19 +46,52 @@ st.markdown("""[Tushar-Aggarwal.com](https://tushar-aggarwal.com/)""")
 
 
 # File handler
-# Read in data from the Google Sheet.
+
+# @st.cache_data(ttl=600)
+# def load_data(sheets_url):
+#     csv_url = sheets_url.replace("/edit#gid=", "/export?format=csv&gid=")
+#     return pd.read_excel(csv_url)
+
+# df = load_data(st.secrets["public_gsheets_url"])
+
+# df=pd.read_csv(r'src\data\Superstore.csv', encoding='ISO-8859-1',on_bad_lines='skip')
+#df = pd.read_excel("src\data\Superstore.xls")
+
+
+
+import psycopg2
+
+# Initialize connection.
+# Uses st.cache_resource to only run once.
+@st.cache_resource
+def init_connection():
+    return psycopg2.connect(**st.secrets["postgres"])
+
+conn = init_connection()
+
+# Perform query.
 # Uses st.cache_data to only rerun when the query changes or after 10 min.
 @st.cache_data(ttl=600)
-def load_data(sheets_url):
-    csv_url = sheets_url.replace("/edit#gid=", "/export?format=csv&gid=")
-    return pd.read_excel(csv_url,sheet_name='Orders')
+def run_query(query):
+    with conn.cursor() as cur:
+        cur.execute(query)
+        return cur.fetchall()
 
-df = load_data(st.secrets["public_gsheets_url"])
+rows = run_query("SELECT * from superstore;")
 
+# Print results.
+for row in rows:
+    st.write(f"{row[0]} has a :{row[1]}:")
 
+#NavBar
 
-
-
+main_navbar =option_menu(
+    menu_title=None,
+    options=['Home', 'Sales', 'Sales1'],
+    icons=["house", "book", "envelope"],
+    menu_icon="cast",
+    default_index=0,
+    orientation="horizontal")
 
 #df = pd.read_excel(r"D:\Superstore-Sales-with-Streamlit\src\data\Superstore.xls")
 #Date
