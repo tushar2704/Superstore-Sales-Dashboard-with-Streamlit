@@ -54,34 +54,34 @@ st.markdown("""[Tushar-Aggarwal.com](https://tushar-aggarwal.com/)""")
 
 # df = load_data(st.secrets["public_gsheets_url"])
 
-# df=pd.read_csv(r'src\data\Superstore.csv', encoding='ISO-8859-1',on_bad_lines='skip')
+df=pd.read_csv(r'data_query\superstore.csv')
 #df = pd.read_excel("src\data\Superstore.xls")
+#, encoding='ISO-8859-1',on_bad_lines='skip'
 
 
+# import psycopg2
 
-import psycopg2
+# # Initialize connection.
+# # Uses st.cache_resource to only run once.
+# @st.cache_resource
+# def init_connection():
+#     return psycopg2.connect(**st.secrets["postgres"])
 
-# Initialize connection.
-# Uses st.cache_resource to only run once.
-@st.cache_resource
-def init_connection():
-    return psycopg2.connect(**st.secrets["postgres"])
+# conn = init_connection()
 
-conn = init_connection()
+# # Perform query.
+# # Uses st.cache_data to only rerun when the query changes or after 10 min.
+# @st.cache_data(ttl=600)
+# def run_query(query):
+#     with conn.cursor() as cur:
+#         cur.execute(query)
+#         return cur.fetchall()
 
-# Perform query.
-# Uses st.cache_data to only rerun when the query changes or after 10 min.
-@st.cache_data(ttl=600)
-def run_query(query):
-    with conn.cursor() as cur:
-        cur.execute(query)
-        return cur.fetchall()
+# rows = run_query("SELECT * from superstore;")
 
-rows = run_query("SELECT * from superstore;")
-
-# Print results.
-for row in rows:
-    st.write(f"{row[0]} has a :{row[1]}:")
+# # Print results.
+# for row in rows:
+#     st.write(f"{row[0]} has a :{row[1]}:")
 
 #NavBar
 
@@ -96,11 +96,11 @@ main_navbar =option_menu(
 #df = pd.read_excel(r"D:\Superstore-Sales-with-Streamlit\src\data\Superstore.xls")
 #Date
 col1, col2 = st.columns((2))
-df["Order Date"] = pd.to_datetime(df["Order Date"])
+df["order_date"] = pd.to_datetime(df["order_date"])
 
 # Getting the min and max date 
-startDate = pd.to_datetime(df["Order Date"]).min()
-endDate = pd.to_datetime(df["Order Date"]).max()
+startDate = pd.to_datetime(df["order_date"]).min()
+endDate = pd.to_datetime(df["order_date"]).max()
 
 with col1:
     date1 = pd.to_datetime(st.date_input("Start Date", startDate))
@@ -108,30 +108,30 @@ with col1:
 with col2:
     date2 = pd.to_datetime(st.date_input("End Date", endDate))
 
-df = df[(df["Order Date"] >= date1) & (df["Order Date"] <= date2)].copy()
+df = df[(df["order_date"] >= date1) & (df["order_date"] <= date2)].copy()
 
 
 #Sidebars
 st.sidebar.header("Choose your filter: ")
 # Create for Region
-region = st.sidebar.multiselect("Select Region", df["Region"].unique())
+region = st.sidebar.multiselect("Select Region", df["region"].unique())
 if not region:
     df2 = df.copy()
 else:
-    df2 = df[df["Region"].isin(region)]
+    df2 = df[df["region"].isin(region)]
     
 
 
 # Create for State
-state = st.sidebar.multiselect("Select State", df2["State"].unique())
+state = st.sidebar.multiselect("Select State", df2["state"].unique())
 if not state:
     df3 = df2.copy()
 else:
-    df3 = df2[df2["State"].isin(state)]
+    df3 = df2[df2["state"].isin(state)]
     
     
 # Create for City
-city = st.sidebar.multiselect("Pick the City",df3["City"].unique())
+city = st.sidebar.multiselect("Pick the City",df3["city"].unique())
 
 
 # Filter the data based on Region, State and City
@@ -139,33 +139,33 @@ city = st.sidebar.multiselect("Pick the City",df3["City"].unique())
 if not region and not state and not city:
     filtered_df = df
 elif not state and not city:
-    filtered_df = df[df["Region"].isin(region)]
+    filtered_df = df[df["region"].isin(region)]
 elif not region and not city:
-    filtered_df = df[df["State"].isin(state)]
+    filtered_df = df[df["state"].isin(state)]
 elif state and city:
-    filtered_df = df3[df["State"].isin(state) & df3["City"].isin(city)]
+    filtered_df = df3[df["state"].isin(state) & df3["city"].isin(city)]
 elif region and city:
-    filtered_df = df3[df["Region"].isin(region) & df3["City"].isin(city)]
+    filtered_df = df3[df["region"].isin(region) & df3["city"].isin(city)]
 elif region and state:
-    filtered_df = df3[df["Region"].isin(region) & df3["State"].isin(state)]
+    filtered_df = df3[df["region"].isin(region) & df3["state"].isin(state)]
 elif city:
-    filtered_df = df3[df3["City"].isin(city)]
+    filtered_df = df3[df3["city"].isin(city)]
 else:
-    filtered_df = df3[df3["Region"].isin(region) & df3["State"].isin(state) & df3["City"].isin(city)]
+    filtered_df = df3[df3["region"].isin(region) & df3["state"].isin(state) & df3["city"].isin(city)]
     
 #Column Chart
-category_df = filtered_df.groupby(by = ["Category"], as_index = False)["Sales"].sum()
+category_df = filtered_df.groupby(by = ["category"], as_index = False)["sales"].sum()
 with col1:
     st.subheader("Category wise Sales")
-    fig = px.bar(category_df, x = "Category", y = "Sales", text = ['${:,.2f}'.format(x) for x in category_df["Sales"]],
+    fig = px.bar(category_df, x = "category", y = "sales", text = ['${:,.2f}'.format(x) for x in category_df["sales"]],
                  template = "seaborn")
     st.plotly_chart(fig,use_container_width=True, height = 200)
     
 #Pie Chart
 with col2:
     st.subheader("Region wise Sales")
-    fig = px.pie(filtered_df, values = "Sales", names = "Region", hole = 0.5)
-    fig.update_traces(text = filtered_df["Region"], textposition = "outside")
+    fig = px.pie(filtered_df, values = "sales", names = "region", hole = 0.5)
+    fig.update_traces(text = filtered_df["region"], textposition = "outside")
     st.plotly_chart(fig,use_container_width=True)
 
 #Flitered Data download expander
@@ -179,18 +179,18 @@ with cl1:
 
 with cl2:
     with st.expander("Region_ViewData"):
-        region = filtered_df.groupby(by = "Region", as_index = False)["Sales"].sum()
+        region = filtered_df.groupby(by = "region", as_index = False)["sales"].sum()
         st.write(region)
         csv = region.to_csv(index = False).encode('utf-8')
         st.download_button("Download Data", data = csv, file_name = "Region.csv", mime = "text/csv",
                         help = 'Click here to download the data as a CSV file')
 
 #Linechart
-filtered_df["month_year"] = filtered_df["Order Date"].dt.to_period("M")
+filtered_df["month_year"] = filtered_df["order_date"].dt.to_period("M")
 st.subheader('Time Series Analysis')
 
-linechart = pd.DataFrame(filtered_df.groupby(filtered_df["month_year"].dt.strftime("%Y : %b"))["Sales"].sum()).reset_index()
-fig2 = px.line(linechart, x = "month_year", y="Sales", labels = {"Sales": "Amount"},height=500, width = 1000,template="gridon")
+linechart = pd.DataFrame(filtered_df.groupby(filtered_df["month_year"].dt.strftime("%Y : %b"))["sales"].sum()).reset_index()
+fig2 = px.line(linechart, x = "month_year", y="sales", labels = {"Sales": "Amount"},height=500, width = 1000,template="gridon")
 st.plotly_chart(fig2,use_container_width=True)
 
 with st.expander("View Data of TimeSeries:"):
@@ -201,8 +201,8 @@ with st.expander("View Data of TimeSeries:"):
 #Treemap
 # Create a treem based on Region, category, sub-Category
 st.subheader("Hierarchical view of Sales using TreeMap")
-fig3 = px.treemap(filtered_df, path = ["Region","Category","Sub-Category"], values = "Sales",hover_data = ["Sales"],
-                  color = "Sub-Category")
+fig3 = px.treemap(filtered_df, path = ["region","category","sub_category"], values = "sales",hover_data = ["sales"],
+                  color = "sub_category")
 fig3.update_layout(width = 800, height = 650)
 st.plotly_chart(fig3, use_container_width=True)
 
@@ -210,30 +210,30 @@ st.plotly_chart(fig3, use_container_width=True)
 chart1, chart2 = st.columns((2))
 with chart1:
     st.subheader('Segment wise Sales')
-    fig = px.pie(filtered_df, values = "Sales", names = "Segment", template = "plotly_dark")
-    fig.update_traces(text = filtered_df["Segment"], textposition = "inside")
+    fig = px.pie(filtered_df, values = "sales", names = "segment", template = "plotly_dark")
+    fig.update_traces(text = filtered_df["segment"], textposition = "inside")
     st.plotly_chart(fig,use_container_width=True)
 
 with chart2:
     st.subheader('Category wise Sales')
-    fig = px.pie(filtered_df, values = "Sales", names = "Category", template = "gridon")
-    fig.update_traces(text = filtered_df["Category"], textposition = "inside")
+    fig = px.pie(filtered_df, values = "sales", names = "category", template = "gridon")
+    fig.update_traces(text = filtered_df["category"], textposition = "inside")
     st.plotly_chart(fig,use_container_width=True)
 
 import plotly.figure_factory as ff
 st.subheader(":point_right: Month wise Sub-Category Sales Summary")
 with st.expander("Summary_Table"):
-    df_sample = df[0:5][["Region","State","City","Category","Sales","Profit","Quantity"]]
+    df_sample = df[0:5][["region","state","city","category","sales","profit","quantity"]]
     fig = ff.create_table(df_sample, colorscale = "Cividis")
     st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("Month wise sub-Category Table")
-    filtered_df["month"] = filtered_df["Order Date"].dt.month_name()
-    sub_category_Year = pd.pivot_table(data = filtered_df, values = "Sales", index = ["Sub-Category"],columns = "month")
+    filtered_df["month"] = filtered_df["order_date"].dt.month_name()
+    sub_category_Year = pd.pivot_table(data = filtered_df, values = "sales", index = ["sub_category"],columns = "month")
     st.write(sub_category_Year)
 
 # Create a scatter plot
-data1 = px.scatter(filtered_df, x = "Sales", y = "Profit", size = "Quantity")
+data1 = px.scatter(filtered_df, x = "sales", y = "profit", size = "quantity")
 data1['layout'].update(title="Relationship between Sales and Profits using Scatter Plot.",
                        titlefont = dict(size=20),xaxis = dict(title="Sales",titlefont=dict(size=19)),
                        yaxis = dict(title = "Profit", titlefont = dict(size=19)))
