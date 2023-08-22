@@ -130,3 +130,5 @@ dmypy.json
 app/*
 
 .streamlit\secrets.toml
+D:\Superstore-Sales-with-Streamlit\.streamlit\secrets.toml
+secrets.toml
