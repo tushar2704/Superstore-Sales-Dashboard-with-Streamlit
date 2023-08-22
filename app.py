@@ -54,7 +54,7 @@ st.markdown("""[Tushar-Aggarwal.com](https://tushar-aggarwal.com/)""")
 
 # df = load_data(st.secrets["public_gsheets_url"])
 
-df=pd.read_csv(r'data_query\superstore.csv')
+#df=pd.read_csv(r'data_query\superstore.csv')
 #df = pd.read_excel("src\data\Superstore.xls")
 #, encoding='ISO-8859-1',on_bad_lines='skip'
 
@@ -82,6 +82,24 @@ df=pd.read_csv(r'data_query\superstore.csv')
 # # Print results.
 # for row in rows:
 #     st.write(f"{row[0]} has a :{row[1]}:")
+
+
+
+#
+import requests
+
+# GitHub CSV file URL
+github_csv_url = 'https://raw.githubusercontent.com/tushar2704/Superstore-Sales-with-Streamlit/main/data_query/superstore.csv'
+
+# Fetch data from the GitHub URL
+response = requests.get(github_csv_url)
+
+if response.status_code == 200:
+    # Read the CSV data into a Pandas DataFrame
+    df = pd.read_csv(github_csv_url)
+    
+else:
+    pass
 
 #NavBar
 
