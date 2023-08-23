@@ -29,8 +29,13 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 
 
 #Page Title 
-st.title("Superstore Sales with Streamlit")
-st.markdown('<style>div.block-container{padding-top:1rem;}</style>',unsafe_allow_html=True)
+st.title("SUPERSTORE SALES DASHBOARD")
+st.markdown('''<style>
+            div.block-container{padding-top:1rem;}
+            font-family: 'Roboto', sans-serif; /* Add Roboto font */
+            color: blue; /* Make the text blue */
+            </style>''',
+            unsafe_allow_html=True)
 image_url = 'https://raw.githubusercontent.com/tushar2704/Superstore-Sales-with-Streamlit/main/src/images/logo.png'
 #st.sidebar.image(image_url, width=100) 
 # st.sidebar.markdown("""
@@ -95,25 +100,25 @@ top_city = df_selection['city'].mode().to_string(index=False)
  #3. columns
 total1,total2,total3,total4,total5 = st.columns(5,gap="small")
 with total1:
-    st.info('Total Sales', icon="📶")
+    st.info('Total Sales', icon="📈")
     
     st.metric(label = '', value= f"${total_sales:,.0f}")
     
     
 with total2:
-    st.info('Qty Sold', icon="📶")
+    st.info('Qty Sold', icon="🛒")
     st.metric(label='', value=f"{qty_sold:,.0f}")
 
 with total3:
-    st.info('Total Profit ', icon="🔍")
+    st.info('Total Profit ', icon="🏦")
     st.metric(label= '',value=f"${total_profit :,.0f}")
 
 with total4:
-    st.info('Top Category', icon="🔍")
+    st.info('Top Category', icon="🏢")
     st.metric(label='', value=top_category)
 
 with total5:
-    st.info('Top City', icon="🔍")
+    st.info('Top City', icon="🏙")
     st.metric(label='',value=top_city)
 
 st.markdown("""---""")
@@ -176,15 +181,22 @@ with city:
 
 
 
+ab, ab1 =st.columns(2, gap="small")
 
+def about():
+    ab.image(image_url, width=100) 
+    
+    ab1.markdown("""
+                 
+                 
+                 #### Visit [Tushar Aggarwal](https://tushar-aggarwal.com/)
+                 This project aims to provide an easy-to-use interface for users to gain insights into sales trends, product performance, and customer behavior.
+                 """)
+    
 
-
-st.sidebar.image(image_url, width=100) 
-st.sidebar.markdown("""
-                    This project aims to provide an easy-to-use interface for users to gain insights into sales trends, product performance, and customer behavior.
-                    
-                    ### Visit [Tushar Aggarwal](https://tushar-aggarwal.com/)
-                    """)
+if main_navbar=="Home":
+    about()
+   
 
 
 # navbar_2=option_menu(
@@ -225,15 +237,15 @@ category_df = filtered_df.groupby(by = ["category"], as_index = False)["sales"].
 cl1, cl2 = st.columns((2))
 
 col1, col2=st.columns(2)
-if main_navbar == "Home":
+if main_navbar == "Sales":
     with col1:
-        st.subheader("Category wise Sales")
+        st.subheader("Sales by Category")
         fig = px.bar(category_df, x = "category", y = "sales", text = ['${:,.2f}'.format(x) for x in category_df["sales"]],
                     template = "seaborn")
         st.plotly_chart(fig,use_container_width=True, height = 200)
  
     with col2:
-        st.subheader("Region wise Sales")
+        st.subheader("Sales by Region")
         fig = px.pie(filtered_df, values = "sales", names = "region", hole = 0.5)
         fig.update_traces(text = filtered_df["region"], textposition = "outside")
         st.plotly_chart(fig,use_container_width=True)
