@@ -14,7 +14,7 @@ import requests
 #Page setups
 #Application Title and Page Structure
 #page config
-st.set_page_config(page_title="Superstore Sales with Streamlit 🛒",
+st.set_page_config(page_title="Superstore Sales Dashboard 🛒",
                    page_icon=":🛒:",
                    layout='wide')
 # ---- HIDE STREAMLIT STYLE ----
@@ -31,13 +31,25 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 #Page Title 
 st.title("Superstore Sales with Streamlit")
 st.markdown('<style>div.block-container{padding-top:1rem;}</style>',unsafe_allow_html=True)
-
-     
-st.sidebar.markdown("""
-                    Welcome to the Superstore Sales with Streamlit app! This project aims to provide an easy-to-use interface for users to gain insights into sales trends, product performance, and customer behavior.
+image_url = 'https://raw.githubusercontent.com/tushar2704/Superstore-Sales-with-Streamlit/main/src/images/logo.png'
+#st.sidebar.image(image_url, width=100) 
+# st.sidebar.markdown("""
+#                     Superstore Sales Dashboard with Streamlit. This project aims to provide an easy-to-use interface for users to gain insights into sales trends, product performance, and customer behavior.
                     
-                    ### [Tushar Aggarwal](https://tushar-aggarwal.com/)
-                    """)
+#                     ### Visit [Tushar Aggarwal](https://tushar-aggarwal.com/)
+#                     """)
+
+with st.sidebar:
+    main_navbar =option_menu(
+        menu_title=None,
+        options=['Home','Sales' ,'Sales by Time','Next', 'Time', '1', '2', '3'],
+        icons=["house", "bar-chart-fill", "bar-chart-fill","bar-chart-fill","bar-chart-fill","bar-chart-fill","bar-chart-fill"],
+        menu_icon="cast",
+        default_index=0,
+        )
+st.write(f"Selected Menu Item: {main_navbar}")
+
+
 
 
 # File handler
@@ -71,15 +83,7 @@ else:
     st.error("Failed to fetch data.")
 
 
-main_navbar =option_menu(
-    menu_title=None,
-    options=['Home','Sales' ,'Sales by Time','Next', 'Time', '1', '2', '3'],
-    icons=["house", "bar-chart-fill", "bar-chart-fill","bar-chart-fill","bar-chart-fill","bar-chart-fill","bar-chart-fill"],
-    menu_icon="cast",
-    default_index=0,
-    orientation="horizontal")
-
-
+#################################################################
 #2. compute top Analytics
 df_selection= df.copy()
 total_sales = float(df_selection['sales'].sum())
@@ -115,6 +119,53 @@ with total5:
 st.markdown("""---""")
 
 
+################################################
+
+# Create for Region
+region, state, city, start, end =st.columns((5))
+
+#Sales by Date
+#col1, col2= st.columns((2))
+df["order_date"] = pd.to_datetime(df["order_date"])
+
+# Getting the min and max date 
+startDate = pd.to_datetime(df["order_date"]).min()
+endDate = pd.to_datetime(df["order_date"]).max()
+
+with start:
+    date1 = pd.to_datetime(st.date_input("Start Date", startDate))
+
+with end:
+    date2 = pd.to_datetime(st.date_input("End Date", endDate))
+
+df = df[(df["order_date"] >= date1) & (df["order_date"] <= date2)].copy()
+
+
+
+
+
+with region:
+    region = st.multiselect("Select Region", df["region"].unique())
+if not region:
+    df2 = df.copy()
+else:
+    df2 = df[df["region"].isin(region)]
+    
+
+
+# Create for State
+with state:
+    state = st.multiselect("Select State", df2["state"].unique())
+if not state:
+    df3 = df2.copy()
+else:
+    df3 = df2[df2["state"].isin(state)]
+    
+    
+# Create for City
+with city:
+    city = st.multiselect("Pick the City",df3["city"].unique())
+
 
 
 
@@ -126,22 +177,14 @@ st.markdown("""---""")
 
 
 
-#Sales by Date
-col1, col2= st.columns((2))
-df["order_date"] = pd.to_datetime(df["order_date"])
 
-# Getting the min and max date 
-startDate = pd.to_datetime(df["order_date"]).min()
-endDate = pd.to_datetime(df["order_date"]).max()
 
-with col1:
-    date1 = pd.to_datetime(st.sidebar.date_input("Start Date", startDate))
-
-with col2:
-    date2 = pd.to_datetime(st.sidebar.date_input("End Date", endDate))
-
-df = df[(df["order_date"] >= date1) & (df["order_date"] <= date2)].copy()
-
+st.sidebar.image(image_url, width=100) 
+st.sidebar.markdown("""
+                    This project aims to provide an easy-to-use interface for users to gain insights into sales trends, product performance, and customer behavior.
+                    
+                    ### Visit [Tushar Aggarwal](https://tushar-aggarwal.com/)
+                    """)
 
 
 # navbar_2=option_menu(
@@ -154,26 +197,6 @@ df = df[(df["order_date"] >= date1) & (df["order_date"] <= date2)].copy()
 
 #Sidebars
 
-# Create for Region
-
-region = st.sidebar.multiselect("Select Region", df["region"].unique())
-if not region:
-    df2 = df.copy()
-else:
-    df2 = df[df["region"].isin(region)]
-    
-
-
-# Create for State
-state = st.sidebar.multiselect("Select State", df2["state"].unique())
-if not state:
-    df3 = df2.copy()
-else:
-    df3 = df2[df2["state"].isin(state)]
-    
-    
-# Create for City
-city = st.sidebar.multiselect("Pick the City",df3["city"].unique())
 
 
 # Filter the data based on Region, State and City
@@ -201,7 +224,7 @@ category_df = filtered_df.groupby(by = ["category"], as_index = False)["sales"].
 
 cl1, cl2 = st.columns((2))
 
-
+col1, col2=st.columns(2)
 if main_navbar == "Home":
     with col1:
         st.subheader("Category wise Sales")
