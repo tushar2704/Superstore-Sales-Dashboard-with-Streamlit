@@ -34,7 +34,7 @@ st.markdown('<style>div.block-container{padding-top:1rem;}</style>',unsafe_allow
 
      
 st.sidebar.markdown("""
-                    ### Welcome to the Superstore Sales with Streamlit app! This project aims to provide an easy-to-use interface for users to gain insights into sales trends, product performance, and customer behavior.
+                    Welcome to the Superstore Sales with Streamlit app! This project aims to provide an easy-to-use interface for users to gain insights into sales trends, product performance, and customer behavior.
                     
                     ### [Tushar Aggarwal](https://tushar-aggarwal.com/)
                     """)
@@ -42,102 +42,77 @@ st.sidebar.markdown("""
 
 # File handler
 
-# @st.cache_data(ttl=600)
-# def load_data(sheets_url):
-#     csv_url = sheets_url.replace("/edit#gid=", "/export?format=csv&gid=")
-#     return pd.read_excel(csv_url)
-
-# df = load_data(st.secrets["public_gsheets_url"])
-
-#df=pd.read_csv(r'data_query\superstore.csv')
-#df = pd.read_excel("src\data\Superstore.xls")
-#, encoding='ISO-8859-1',on_bad_lines='skip'
 
 
-# import psycopg2
-
-# # Initialize connection.
-# # Uses st.cache_resource to only run once.
-# @st.cache_resource
-# def init_connection():
-#     return psycopg2.connect(**st.secrets["postgres"])
-
-# conn = init_connection()
-
-# # Perform query.
-# # Uses st.cache_data to only rerun when the query changes or after 10 min.
-# @st.cache_data(ttl=600)
-# def run_query(query):
-#     with conn.cursor() as cur:
-#         cur.execute(query)
-#         return cur.fetchall()
-
-# rows = run_query("SELECT * from superstore;")
-
-# # Print results.
-# for row in rows:
-#     st.write(f"{row[0]} has a :{row[1]}:")
-
-
-
-#
-
-
-# GitHub CSV file URL
-github_csv_url = 'https://raw.githubusercontent.com/tushar2704/Superstore-Sales-with-Streamlit/main/data_query/superstore.csv'
-
-# Fetch data from the GitHub URL
-response = requests.get(github_csv_url)
-
-if response.status_code == 200:
-    # Read the CSV data into a Pandas DataFrame
-    df = pd.read_csv(github_csv_url)
     
-else:
+
+#Progress  
+@st.cache_data(ttl=600)  # Adjust ttl (time-to-live) as needed
+def download_and_clean_data():
+    # GitHub CSV file URL
+    github_csv_url = 'https://raw.githubusercontent.com/tushar2704/Superstore-Sales-with-Streamlit/main/data_query/superstore.csv'
+
+    # Fetch data from the GitHub URL
+    response = requests.get(github_csv_url)
+
+    if response.status_code == 200:
+        # Read the CSV data into a Pandas DataFrame
+        df = pd.read_csv(github_csv_url)
+        return df
+    else:
+        return None
+with st.spinner(text='Downloading & Cleaning Data'):
+    df = download_and_clean_data()
+
+# Check if the data is available and display it
+if df is not None:
     pass
-
-#NavBar
-
-
-# st.markdown('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">', unsafe_allow_html=True)
-
-# st.markdown("""
-# <nav class="navbar fixed-top navbar-expand-lg navbar-dark" style="background-color: #B6B7B2;">
-#   <a class="navbar-brand" href="https://tushar-aggarwal.com/" target="_blank">Tushar Aggarwal</a>
-#   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-#     <span class="navbar-toggler-icon"></span>
-#   </button>
-#   <div class="collapse navbar-collapse" id="navbarNav">
-#     <ul class="navbar-nav">
-#       <li class="nav-item active">
-#         <a class="nav-link disabled" href="#">Home <span class="sr-only">(current)</span></a>
-#       </li>
-#       <li class="nav-item">
-#         <a class="nav-link" href="https://www.linkedin.com/in/tusharaggarwalinseec/" target="_blank">LinkedIn</a>
-#       </li>
-#       <li class="nav-item">
-#         <a class="nav-link" href="https://github.com/tushar2704" target="_blank">Github</a>
-#       </li>
-#     </ul>
-#   </div>
-# </nav>
-# """, unsafe_allow_html=True)
-
-
-#df = pd.read_excel(r"D:\Superstore-Sales-with-Streamlit\src\data\Superstore.xls")
+else:
+    st.error("Failed to fetch data.")
 
 
 main_navbar =option_menu(
     menu_title=None,
     options=['Home','Sales' ,'Sales by Time','Next', 'Time', '1', '2', '3'],
-    icons=["house", "bar-chart-fill", "envelope"],
+    icons=["house", "bar-chart-fill", "bar-chart-fill","bar-chart-fill","bar-chart-fill","bar-chart-fill","bar-chart-fill"],
     menu_icon="cast",
     default_index=0,
     orientation="horizontal")
 
 
-if main_navbar == "Home":
-    st.write("1")
+#2. compute top Analytics
+df_selection= df.copy()
+total_sales = float(df_selection['sales'].sum())
+qty_sold = float(df_selection['quantity'].sum())
+#  investment_mean = float(df_selection['Investment'].mean())
+#  investment_median= float(df_selection['Investment'].median()) 
+#  rating = float(df_selection['Rating'].sum())
+
+ #3. columns
+total1,total2,total3,total4,total5 = st.columns(5,gap='large')
+with total1:
+    st.info('Total Sales', icon="📶")
+    
+    st.metric(label = 'Total Sales', value= f"${total_sales:,.0f}")
+    
+    
+# with total2:
+# st.info('Most frequently', icon="🔍")
+# st.metric(label='Mode TZS', value=f"{investment_mode:,.0f}")
+
+# with total3:
+# st.info('Investment Average', icon="🔍")
+# st.metric(label= 'Mean TZS',value=f"{investment_mean:,.0f}")
+
+# with total4:
+# st.info('Investment Marging', icon="🔍")
+# st.metric(label='Median TZS',value=f"{investment_median:,.0f}")
+
+# with total5:
+# st.info('Ratings', icon="🔍")
+# st.metric(label='Rating',value=numerize(rating),help=f"""Total rating: {rating}""")
+
+# st.markdown("""---""")
 
 
 
@@ -222,8 +197,12 @@ else:
  
  #Navigation for Salesbydate
 category_df = filtered_df.groupby(by = ["category"], as_index = False)["sales"].sum()
+
+
 cl1, cl2 = st.columns((2))
-if main_navbar == "Sales":
+
+
+if main_navbar == "Home":
     with col1:
         st.subheader("Category wise Sales")
         fig = px.bar(category_df, x = "category", y = "sales", text = ['${:,.2f}'.format(x) for x in category_df["sales"]],
@@ -318,7 +297,7 @@ if main_navbar == "Next":
     # Download orginal DataSet
     csv = df.to_csv(index = False).encode('utf-8')
     st.download_button('Download Data', data = csv, file_name = "Data.csv",mime = "text/csv")
-
+    
 
 
 
