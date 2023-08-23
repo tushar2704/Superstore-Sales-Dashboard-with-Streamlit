@@ -84,35 +84,35 @@ main_navbar =option_menu(
 df_selection= df.copy()
 total_sales = float(df_selection['sales'].sum())
 qty_sold = float(df_selection['quantity'].sum())
-#  investment_mean = float(df_selection['Investment'].mean())
-#  investment_median= float(df_selection['Investment'].median()) 
-#  rating = float(df_selection['Rating'].sum())
+total_profit = float(df_selection['profit'].sum())
+top_category = df_selection['category'].mode().to_string(index=False)
+top_city = df_selection['city'].mode().to_string(index=False)
 
  #3. columns
-total1,total2,total3,total4,total5 = st.columns(5,gap='large')
+total1,total2,total3,total4,total5 = st.columns(5,gap="small")
 with total1:
     st.info('Total Sales', icon="📶")
     
-    st.metric(label = 'Total Sales', value= f"${total_sales:,.0f}")
+    st.metric(label = '', value= f"${total_sales:,.0f}")
     
     
-# with total2:
-# st.info('Most frequently', icon="🔍")
-# st.metric(label='Mode TZS', value=f"{investment_mode:,.0f}")
+with total2:
+    st.info('Qty Sold', icon="📶")
+    st.metric(label='', value=f"{qty_sold:,.0f}")
 
-# with total3:
-# st.info('Investment Average', icon="🔍")
-# st.metric(label= 'Mean TZS',value=f"{investment_mean:,.0f}")
+with total3:
+    st.info('Total Profit ', icon="🔍")
+    st.metric(label= '',value=f"${total_profit :,.0f}")
 
-# with total4:
-# st.info('Investment Marging', icon="🔍")
-# st.metric(label='Median TZS',value=f"{investment_median:,.0f}")
+with total4:
+    st.info('Top Category', icon="🔍")
+    st.metric(label='', value=top_category)
 
-# with total5:
-# st.info('Ratings', icon="🔍")
-# st.metric(label='Rating',value=numerize(rating),help=f"""Total rating: {rating}""")
+with total5:
+    st.info('Top City', icon="🔍")
+    st.metric(label='',value=top_city)
 
-# st.markdown("""---""")
+st.markdown("""---""")
 
 
 

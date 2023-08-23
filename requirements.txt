@@ -8,4 +8,3 @@ requests
 openpyxl
 xlrd
 streamlit-option-menu
-psycopg2-binary==2.9.7
