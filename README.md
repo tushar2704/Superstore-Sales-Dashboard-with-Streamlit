@@ -6,6 +6,11 @@
 
 Superstore Sales with Streamlit is a data visualization and analysis project that uses the Streamlit framework to create an interactive web application for exploring and analyzing sales data from a superstore. This project aims to provide an easy-to-use interface for users to gain insights into sales trends, product performance, and customer behavior.
 
+## Deployment
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://tushar2704-superstore-sales-dashboard.streamlit.app/)
+
+
+
 ## Dataset
 - Stored in cloud on personal [Supabase](https://supabase.com/) account
 - Stored in POSTGRSQL server
@@ -30,48 +35,6 @@ Superstore Sales with Streamlit is a data visualization and analysis project tha
 
 ## Getting Started
 
-### Prerequisites
-
-Before you start, ensure you have the following requirements:
-
-- Python 3.6+
-- [Pip](https://pip.pypa.io/en/stable/installation/) (Python package manager)
-
-### Installation
-
-1. Clone the repository to your local machine:
-
-   ```bash
-   git clone https://github.com/tushar2704/Superstore-Sales-with-Streamlit.git
-   ```
-
-2. Navigate to the project directory:
-
-   ```bash
-   cd Superstore-Sales-with-Streamlit
-   ```
-
-3. Install the required dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-## Usage
-
-### Running the Application
-
-To start the Superstore Sales web application, run the following command:
-
-```bash
-streamlit run app.py
-```
-
-This will launch the application in your default web browser, and you can start exploring the sales data.
-
-### Demo
-
-You can view a live demo of the Superstore Sales application at [Demo Link](https://your-demo-link.com).
 
 ## Project Structure
 
@@ -84,12 +47,6 @@ Explain the structure of your project here. For example:
 - `README.md`: This file.
 - ...
 
-## Contributing
-
-If you would like to contribute to this project, please follow the guidelines in [CONTRIBUTING.md](CONTRIBUTING.md).
-
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
-
----
+Due to the extensive time invested in code development and in consideration of privacy concerns, the source code for the application is currently not publicly accessible. Should anyone have an interest in obtaining access to the code, please do not hesitate to contact me directly. Your understanding is greatly appreciated. Thank you
