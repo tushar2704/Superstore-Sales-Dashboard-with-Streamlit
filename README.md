@@ -27,8 +27,7 @@ Superstore Sales with Streamlit is a data visualization and analysis project tha
 
 
 ## Dataset
-- Stored in cloud on personal [Supabase](https://supabase.com/) account
-- Stored in POSTGRSQL server
+- Stored in cloud on personal <a href="https://www.linkedin.com/in/tusharaggarwalinseec/">![Supabase](https://img.shields.io/badge/Supabase-3FCF8E.svg?style=for-the-badge&logo=Supabase&logoColor=white)</a> on POSTGRSQL server
 
 ## Features
 
